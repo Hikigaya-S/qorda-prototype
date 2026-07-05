@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QORDA — Verified Learning for the AI Era</title>
+<style>
+  :root{
+    --ink:#0B1430;        /* deep navy */
+    --ink2:#141E40;
+    --panel:#1B2750;
+    --paper:#F6F8FC;
+    --line:#DDE3EE;
+    --muted:#5C6B8A;
+    --muted2:#8893AC;
+    --cyan:#21D4C4;
+    --cyan-d:#0E9E92;
+    --flag:#FF4D5E;
+    --ok:#2BB673;
+    --white:#FFFFFF;
+    --shadow:0 10px 30px rgba(11,20,48,.10);
+    --shadow-sm:0 4px 14px rgba(11,20,48,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',Roboto,sans-serif;
+    color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{font-family:Georgia,'Times New Roman',serif;}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 26px}
+  .mono{font-family:'SF Mono',Menlo,Consolas,monospace}
+
+  /* ---------- top nav ---------- */
+  .nav{position:sticky;top:0;z-index:50;background:rgba(246,248,252,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:Georgia,serif;font-weight:700;font-size:22px;letter-spacing:.5px;color:var(--ink)}
+  .logo .mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--cyan),var(--cyan-d));display:inline-flex;align-items:center;justify-content:center}
+  .logo .mark::after{content:"";width:10px;height:10px;border:2.5px solid #062a28;border-radius:50% 50% 50% 0;transform:rotate(45deg)}
+  .nav-links{display:flex;gap:28px;align-items:center}
+  .nav-links a{font-size:14px;color:var(--muted);font-family:'Segoe UI',sans-serif}
+  .nav-links a:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;padding:10px 18px;border-radius:9px;transition:.18s;font-family:'Segoe UI',sans-serif}
+  .btn-primary{background:var(--ink);color:#fff}
+  .btn-primary:hover{background:#16224a;transform:translateY(-1px)}
+  .btn-cyan{background:var(--cyan);color:#06302c}
+  .btn-cyan:hover{filter:brightness(1.05);transform:translateY(-1px)}
+  .btn-ghost{border:1px solid var(--line);color:var(--ink);background:#fff}
+  .btn-ghost:hover{border-color:var(--muted2)}
+
+  /* ---------- views ---------- */
+  .view{display:none}
+  .view.active{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* ---------- hero ---------- */
+  .hero{background:
+      radial-gradient(120% 90% at 85% -10%, #1a2a5e 0%, var(--ink) 55%);
+    color:#fff;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(33,212,196,.16),transparent 70%)}
+  .hero-in{padding:78px 0 86px;position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cyan);font-weight:600;font-family:'Segoe UI',sans-serif;margin-bottom:18px}
+  .eyebrow::before{content:"";width:22px;height:1.5px;background:var(--cyan)}
+  .hero h1{font-size:46px;line-height:1.1;letter-spacing:-.5px;margin-bottom:20px}
+  .hero h1 em{font-style:italic;color:var(--cyan)}
+  .hero p.sub{font-size:17px;color:#C9D6F2;max-width:520px;margin-bottom:30px}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+  .hero-note{margin-top:22px;font-size:13px;color:var(--muted2);font-family:'Segoe UI',sans-serif}
+
+  /* hero demo card */
+  .demo-card{background:#fff;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.35);overflow:hidden;color:var(--ink)}
+  .dc-top{background:var(--ink2);padding:12px 16px;display:flex;align-items:center;gap:8px}
+  .dot{width:10px;height:10px;border-radius:50%}
+  .dc-top .l{font-size:12px;color:#9fb0d6;margin-left:8px;font-family:'Segoe UI',sans-serif}
+  .dc-body{padding:18px}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:20px;font-family:'Segoe UI',sans-serif}
+  .chip-ok{background:#E3F8F1;color:#0c7a52}
+  .chip-flag{background:#FFE7E9;color:#c01f2e}
+  .bubble{padding:11px 14px;border-radius:12px;font-size:13.5px;margin:10px 0;max-width:88%}
+  .b-ai{background:#EEF2FB;color:var(--ink);border-bottom-left-radius:3px}
+  .b-stu{background:var(--ink);color:#fff;margin-left:auto;border-bottom-right-radius:3px}
+  .typing{font-size:12px;color:var(--muted);font-style:italic}
+
+  /* ---------- generic section ---------- */
+  section.block{padding:72px 0}
+  .sec-eyebrow{font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cyan-d);font-weight:700;font-family:'Segoe UI',sans-serif;margin-bottom:12px}
+  .sec-title{font-size:33px;line-height:1.15;letter-spacing:-.4px;margin-bottom:14px;max-width:760px}
+  .sec-lead{font-size:16.5px;color:var(--muted);max-width:680px;margin-bottom:8px}
+
+  /* problem cards */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:40px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:var(--shadow-sm);transition:.2s}
+  .card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .card .ic{width:44px;height:44px;border-radius:11px;background:var(--ink);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:20px}
+  .card h3{font-size:18px;margin-bottom:8px}
+  .card p{font-size:14px;color:var(--muted)}
+
+  .band{background:var(--ink);color:#fff;border-radius:16px;padding:30px 34px;margin-top:34px;display:flex;gap:18px;align-items:center}
+  .band b{color:#fff}
+  .band .q{font-family:Georgia,serif;font-size:20px;line-height:1.4}
+  .band .q span{color:var(--cyan)}
+
+  /* how it works steps */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:42px}
+  .step{position:relative;padding:24px 20px;border-radius:14px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-sm)}
+  .step .n{font-family:Georgia,serif;font-size:13px;font-weight:700;color:var(--cyan-d);background:#E3F8F1;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+  .step h4{font-size:15.5px;margin-bottom:7px}
+  .step p{font-size:13px;color:var(--muted)}
+
+  /* split feature */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-top:30px}
+  .feat-list{margin-top:18px}
+  .feat-list li{list-style:none;display:flex;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .feat-list li:last-child{border-bottom:none}
+  .feat-list .tick{color:var(--cyan-d);font-weight:700;flex-shrink:0}
+  .panel-dark{background:var(--ink);border-radius:16px;padding:28px;color:#fff}
+  .panel-dark .row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #283561}
+  .panel-dark .row:last-child{border-bottom:none}
+  .panel-dark .rn{width:30px;height:30px;border-radius:8px;background:var(--cyan);color:#06302c;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+  .panel-dark .rt{font-size:14px}.panel-dark .rt b{display:block;color:var(--cyan)}
+
+  /* pricing / model */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:36px}
+  .price{background:#fff;border:1px solid var(--line);border-radius:16px;padding:30px;box-shadow:var(--shadow-sm)}
+  .price.dark{background:var(--ink);color:#fff;border-color:transparent}
+  .price .tag{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--cyan-d);font-weight:700;font-family:'Segoe UI',sans-serif}
+  .price.dark .tag{color:var(--cyan)}
+  .price h3{font-size:21px;margin:8px 0 14px}
+  .price .big{font-family:Georgia,serif;font-size:30px}
+  .price .big small{font-size:14px;color:var(--muted)}
+  .price.dark .big small{color:var(--muted2)}
+  .price ul{margin-top:16px;list-style:none}
+  .price li{font-size:13.5px;padding:6px 0;color:var(--muted);display:flex;gap:9px}
+  .price.dark li{color:#C9D6F2}
+  .price li::before{content:"→";color:var(--cyan-d)}
+  .price.dark li::before{color:var(--cyan)}
+
+  /* CTA footer */
+  .cta{background:var(--ink);color:#fff;border-radius:20px;padding:54px;text-align:center;position:relative;overflow:hidden}
+  .cta::before{content:"";position:absolute;left:-80px;bottom:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(33,212,196,.14),transparent 70%)}
+  .cta h2{font-size:32px;margin-bottom:12px;position:relative}
+  .cta p{color:#C9D6F2;max-width:520px;margin:0 auto 26px;position:relative}
+  footer{padding:40px 0;color:var(--muted);font-size:13px;font-family:'Segoe UI',sans-serif;text-align:center}
+  footer .demo-tag{display:inline-block;margin-top:6px;font-size:12px;color:var(--muted2);background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px 14px}
+
+  /* ============ APP (student + professor) ============ */
+  .app-top{background:var(--ink);color:#fff;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+  .app-top .logo{color:#fff;font-size:19px}
+  .app-top .logo .mark{width:22px;height:22px}
+  .roleswitch{display:flex;background:#26315a;border-radius:9px;padding:3px}
+  .roleswitch button{font-size:13px;font-weight:600;color:#9fb0d6;padding:7px 15px;border-radius:7px;font-family:'Segoe UI',sans-serif}
+  .roleswitch button.on{background:var(--cyan);color:#06302c}
+  .app-top .exit{font-size:13px;color:#9fb0d6;font-family:'Segoe UI',sans-serif}
+  .app-top .exit:hover{color:#fff}
+
+  /* student work screen */
+  .work{max-width:920px;margin:0 auto;padding:28px 24px 60px}
+  .assignment{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow-sm);margin-bottom:18px}
+  .assignment .meta{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+  .pill{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:#EEF2FB;color:var(--muted);font-family:'Segoe UI',sans-serif}
+  .pill.live{background:#E3F8F1;color:#0c7a52}
+  .assignment h2{font-size:20px;margin-bottom:6px}
+  .assignment p{font-size:14.5px;color:var(--muted)}
+
+  .progress{display:flex;gap:8px;margin:18px 0}
+  .progress .seg{flex:1;height:6px;border-radius:4px;background:var(--line)}
+  .progress .seg.done{background:var(--cyan)}
+  .progress .seg.cur{background:var(--cyan);opacity:.5}
+  .progress-label{font-size:12.5px;color:var(--muted);margin-bottom:6px;font-family:'Segoe UI',sans-serif;display:flex;justify-content:space-between}
+
+  .chatwin{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-sm);overflow:hidden}
+  .chat-head{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:11px}
+  .tutor-ava{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--cyan),var(--cyan-d));display:flex;align-items:center;justify-content:center;color:#06302c;font-weight:700;font-family:Georgia,serif}
+  .chat-head .t b{font-size:14.5px}.chat-head .t span{font-size:12px;color:var(--muted)}
+  .chat-head .status{margin-left:auto;font-size:12px;color:var(--ok);font-weight:600;display:flex;align-items:center;gap:6px;font-family:'Segoe UI',sans-serif}
+  .chat-head .status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok)}
+  .msgs{padding:22px 20px;min-height:300px;max-height:420px;overflow-y:auto;background:linear-gradient(#fff,#fbfcfe)}
+  .m{display:flex;margin-bottom:16px;gap:10px}
+  .m .av{width:28px;height:28px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:Georgia,serif}
+  .m.ai .av{background:#E3F8F1;color:var(--cyan-d)}
+  .m.stu{flex-direction:row-reverse}
+  .m.stu .av{background:var(--ink);color:#fff}
+  .m .txt{padding:11px 15px;border-radius:13px;font-size:14px;max-width:78%}
+  .m.ai .txt{background:#EEF2FB;border-bottom-left-radius:3px}
+  .m.stu .txt{background:var(--ink);color:#fff;border-bottom-right-radius:3px}
+  .flag-inline{font-size:11.5px;color:var(--flag);margin-top:5px;font-weight:600;display:flex;align-items:center;gap:5px;font-family:'Segoe UI',sans-serif}
+
+  .composer{border-top:1px solid var(--line);padding:14px 16px;background:#fff}
+  .composer textarea{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px 14px;font-size:14px;font-family:inherit;resize:none;height:64px;outline:none;transition:.15s}
+  .composer textarea:focus{border-color:var(--cyan-d);box-shadow:0 0 0 3px rgba(33,212,196,.12)}
+  .composer-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+  .composer-hint{font-size:12px;color:var(--muted2);font-family:'Segoe UI',sans-serif}
+  .composer-hint b{color:var(--muted)}
+
+  .telemetry{display:flex;gap:8px;align-items:center}
+  .tele-dot{font-size:11px;font-weight:600;padding:5px 11px;border-radius:20px;display:flex;align-items:center;gap:6px;font-family:'Segoe UI',sans-serif;transition:.2s}
+  .tele-typing{background:#E3F8F1;color:#0c7a52}
+  .tele-typing::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok)}
+  .tele-paste{background:#FFE7E9;color:#c01f2e}
+  .tele-paste::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--flag);animation:pulse 1s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* quiz modal */
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(11,20,48,.55);z-index:100;align-items:center;justify-content:center;padding:20px}
+  .modal-bg.show{display:flex;animation:fade .25s}
+  .modal{background:#fff;border-radius:18px;max-width:520px;width:100%;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+  .modal-head{background:var(--ink);color:#fff;padding:22px 26px}
+  .modal-head .pill{background:#26315a;color:var(--cyan)}
+  .modal-head h3{font-size:21px;margin-top:10px}
+  .modal-head p{font-size:13.5px;color:#C9D6F2;margin-top:4px}
+  .timer{float:right;font-family:Georgia,serif;font-size:26px;color:var(--cyan)}
+  .modal-body{padding:24px 26px}
+  .qz{font-size:15px;font-weight:600;margin-bottom:14px}
+  .opt{border:1px solid var(--line);border-radius:11px;padding:13px 15px;font-size:14px;margin-bottom:10px;cursor:pointer;transition:.15s;display:flex;gap:11px;align-items:center}
+  .opt:hover{border-color:var(--cyan-d);background:#fafdff}
+  .opt.sel{border-color:var(--cyan-d);background:#E3F8F1}
+  .opt .k{width:24px;height:24px;border-radius:6px;background:#EEF2FB;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;font-family:'Segoe UI',sans-serif}
+  .opt.sel .k{background:var(--cyan-d);color:#fff}
+
+  /* professor dashboard */
+  .dash{max-width:1180px;margin:0 auto;padding:28px 24px 70px}
+  .dash-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:14px}
+  .dash-head h2{font-size:26px}.dash-head p{font-size:14px;color:var(--muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px 20px;box-shadow:var(--shadow-sm)}
+  .kpi .v{font-family:Georgia,serif;font-size:30px;line-height:1}
+  .kpi .l{font-size:12.5px;color:var(--muted);margin-top:6px;font-family:'Segoe UI',sans-serif}
+  .kpi.flag .v{color:var(--flag)}
+  .kpi.ok .v{color:var(--ok)}
+
+  .matrix{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-sm);overflow:hidden}
+  .matrix-head{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:between;gap:12px}
+  .matrix-head h3{font-size:16px}
+  .matrix-head .sub{font-size:12.5px;color:var(--muted);margin-left:auto;font-family:'Segoe UI',sans-serif}
+  table{width:100%;border-collapse:collapse}
+  thead th{font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);text-align:left;padding:13px 22px;border-bottom:1px solid var(--line);font-family:'Segoe UI',sans-serif;font-weight:600}
+  tbody td{padding:14px 22px;border-bottom:1px solid #EEF2F8;font-size:14px}
+  tbody tr{transition:.12s;cursor:pointer}
+  tbody tr:hover{background:#fafdff}
+  tbody tr:last-child td{border-bottom:none}
+  .stu-name{display:flex;align-items:center;gap:11px}
+  .stu-name .av{width:32px;height:32px;border-radius:8px;background:#EEF2FB;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);font-family:Georgia,serif}
+  .score-bar{display:flex;align-items:center;gap:9px}
+  .score-track{width:80px;height:7px;border-radius:4px;background:var(--line);overflow:hidden}
+  .score-fill{height:100%;border-radius:4px}
+  .badge{font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:20px;display:inline-flex;align-items:center;gap:6px;font-family:'Segoe UI',sans-serif}
+  .badge.green{background:#E3F8F1;color:#0c7a52}
+  .badge.red{background:#FFE7E9;color:#c01f2e}
+  .badge.amber{background:#FFF3E0;color:#b06d00}
+  .badge .d{width:7px;height:7px;border-radius:50%}
+  .badge.green .d{background:var(--ok)}.badge.red .d{background:var(--flag)}.badge.amber .d{background:#f0a000}
+  .you-tag{font-size:10.5px;background:var(--ink);color:#fff;padding:2px 8px;border-radius:10px;margin-left:8px;font-family:'Segoe UI',sans-serif}
+
+  /* detail drawer */
+  .drawer-bg{display:none;position:fixed;inset:0;background:rgba(11,20,48,.45);z-index:90}
+  .drawer-bg.show{display:block;animation:fade .2s}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:440px;max-width:92vw;background:#fff;z-index:91;box-shadow:-10px 0 40px rgba(0,0,0,.2);transform:translateX(100%);transition:.3s;overflow-y:auto}
+  .drawer.show{transform:none}
+  .drawer-head{background:var(--ink);color:#fff;padding:24px 26px}
+  .drawer-head .x{float:right;font-size:22px;color:#9fb0d6;cursor:pointer;line-height:1}
+  .drawer-head h3{font-size:20px;margin-top:8px}
+  .drawer-head .meta{font-size:13px;color:#C9D6F2;margin-top:3px}
+  .drawer-body{padding:24px 26px}
+  .dsec{margin-bottom:24px}
+  .dsec h4{font-size:12.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-family:'Segoe UI',sans-serif}
+  .timeline-item{display:flex;gap:12px;padding-bottom:16px;position:relative}
+  .timeline-item::before{content:"";position:absolute;left:13px;top:28px;bottom:0;width:2px;background:var(--line)}
+  .timeline-item:last-child::before{display:none}
+  .ti-dot{width:28px;height:28px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px}
+  .ti-dot.ok{background:#E3F8F1}.ti-dot.flag{background:#FFE7E9}
+  .ti-txt b{font-size:13.5px;display:block}.ti-txt span{font-size:12.5px;color:var(--muted)}
+
+  /* responsive */
+  @media(max-width:900px){
+    .hero-in{grid-template-columns:1fr;gap:34px}
+    .hero h1{font-size:36px}
+    .grid3,.steps,.split,.grid2,.kpis{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr 1fr}
+    .nav-links{display:none}
+    .drawer{width:100%}
+    .hide-sm{display:none}
+    table{font-size:13px}
+    thead th:nth-child(3),tbody td:nth-child(3){display:none}
+  }
+  @media(max-width:540px){.steps{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- ===================== LANDING VIEW ===================== -->
+<div id="view-landing" class="view active">
+
+  <nav class="nav"><div class="wrap nav-in">
+    <div class="logo"><span class="mark"></span>QORDA</div>
+    <div class="nav-links">
+      <a href="#problem">Problem</a>
+      <a href="#how">How it works</a>
+      <a href="#model">Pricing</a>
+      <a href="#" onclick="go('student');return false;">Live demo</a>
+    </div>
+    <button class="btn btn-primary" onclick="go('student')">Try the demo →</button>
+  </div></nav>
+
+  <header class="hero"><div class="wrap hero-in">
+    <div>
+      <div class="eyebrow">AI-Native LMS for Universities</div>
+      <h1>The bridge between students who <em>truly learn</em> and degrees that stay <em>trusted</em>.</h1>
+      <p class="sub">Students finish assignments in seconds with ChatGPT — and learn nothing. QORDA replaces copy-paste with a guided Socratic dialogue that proves real understanding, and gives professors a live integrity signal no legacy LMS can produce.</p>
+      <div class="hero-cta">
+        <button class="btn btn-cyan" onclick="go('student')">▶ Try it as a student</button>
+        <button class="btn btn-ghost" style="background:transparent;color:#fff;border-color:#3a4a72" onclick="go('professor')">See the professor view</button>
+      </div>
+      <div class="hero-note">No signup • A clickable prototype of the core experience</div>
+    </div>
+
+    <div class="demo-card">
+      <div class="dc-top">
+        <span class="dot" style="background:#ff5f57"></span>
+        <span class="dot" style="background:#febc2e"></span>
+        <span class="dot" style="background:#28c840"></span>
+        <span class="l">qorda.app / session</span>
+      </div>
+      <div class="dc-body">
+        <span class="chip chip-ok">● Live integrity check</span>
+        <div class="bubble b-ai">Before we start — explain in your own words why this algorithm's time complexity matters.</div>
+        <div class="bubble b-stu">It matters because as input grows, a slow algorithm becomes unusable…</div>
+        <div class="typing">student typing — cadence normal ✓</div>
+        <div style="margin-top:12px" class="chip chip-flag">⚠ Paste detected · 0s thought time</div>
+      </div>
+    </div>
+  </div></header>
+
+  <!-- problem -->
+  <section class="block" id="problem"><div class="wrap">
+    <div class="sec-eyebrow">The Problem</div>
+    <h2 class="sec-title serif">Universities have gone blind in the age of generative AI.</h2>
+    <p class="sec-lead">Legacy platforms — Moodle, Canvas, Hero — log a submission, not a single second of thinking. They were built for a world that no longer exists.</p>
+    <div class="grid3">
+      <div class="card"><div class="ic">⚡</div><h3>Copy-paste collapse</h3><p>Graded assignments completed via ChatGPT in seconds, not hours. The work looks perfect; the learning never happened.</p></div>
+      <div class="card"><div class="ic">🚫</div><h3>Zero audit trail</h3><p>Professors can see what was submitted, never how it was produced. Honesty becomes impossible to verify at scale.</p></div>
+      <div class="card"><div class="ic">⚖️</div><h3>Eroding degrees</h3><p>When understanding can't be verified, the value of the diploma quietly erodes — and that's the university's core asset.</p></div>
+    </div>
+    <div class="band">
+      <div class="q">The market no longer needs a better AI <b>detector</b>. <span>It needs a way to certify real understanding.</span></div>
+    </div>
+  </div></section>
+
+  <!-- how it works -->
+  <section class="block" id="how" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+    <div class="sec-eyebrow">How QORDA Works</div>
+    <h2 class="sec-title serif">From detection to certification — verification built into the learning itself.</h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h4>Curriculum in</h4><p>The university uploads its syllabus and materials. QORDA adapts to each subject automatically.</p></div>
+      <div class="step"><div class="n">2</div><h4>Socratic dialogue</h4><p>Students don't submit a block of text — they're guided through probing questions that demand real reasoning.</p></div>
+      <div class="step"><div class="n">3</div><h4>Live telemetry</h4><p>Typing cadence, focus, and paste events are read in real time. A clipboard dump is caught instantly.</p></div>
+      <div class="step"><div class="n">4</div><h4>Verified score</h4><p>A session-specific quiz gate confirms comprehension. The professor sees a clear, auditable signal.</p></div>
+    </div>
+  </div></section>
+
+  <!-- the socratic trap split -->
+  <section class="block"><div class="wrap">
+    <div class="split">
+      <div>
+        <div class="sec-eyebrow">The Signature Mechanic</div>
+        <h2 class="sec-title serif" style="font-size:29px">The Socratic Trap: make faking it cost more than learning.</h2>
+        <p class="sec-lead" style="font-size:15px">Cheating doesn't get a failing grade based on a guess. It gets caught by the structure of the work itself.</p>
+        <ul class="feat-list">
+          <li><span class="tick">✓</span><span><b>Keystroke dynamics.</b> Humans type at 50–100ms per character. A paste mutates text in ~1ms — flagged instantly.</span></li>
+          <li><span class="tick">✓</span><span><b>Focus tracking.</b> Leave to a second tab, come back, dump a wall of text — the telemetry sees it.</span></li>
+          <li><span class="tick">✓</span><span><b>Multi-turn bottleneck.</b> Relaying answers across 5–6 adaptive rounds is slower than just learning it.</span></li>
+          <li><span class="tick">✓</span><span><b>The verification gate.</b> A 30-second, un-googleable quiz drawn from the live session. Fake it, fail it.</span></li>
+        </ul>
+      </div>
+      <div class="panel-dark">
+        <div style="font-family:Georgia,serif;font-size:18px;color:var(--cyan);margin-bottom:6px">From work → to proof</div>
+        <div class="row"><div class="rn">1</div><div class="rt"><b>Curriculum ingested</b>Subject-aware tutor ready</div></div>
+        <div class="row"><div class="rn">2</div><div class="rt"><b>Socratic engagement</b>Student reasons, in their own words</div></div>
+        <div class="row"><div class="rn">3</div><div class="rt"><b>Behavioral + quiz check</b>Comprehension verified live</div></div>
+        <div class="row"><div class="rn">4</div><div class="rt"><b>Integrity score → professor</b>Auditable, real-time, defensible</div></div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- business model -->
+  <section class="block" id="model" style="background:#fff;border-top:1px solid var(--line)"><div class="wrap">
+    <div class="sec-eyebrow">Business Model</div>
+    <h2 class="sec-title serif">A bridge of prosperity — both sides win.</h2>
+    <p class="sec-lead">Students leave genuinely smarter. Universities protect the prestige they sell. We sit in the middle as the trust layer.</p>
+    <div class="grid2">
+      <div class="price">
+        <div class="tag">Primary</div>
+        <h3>Institutional Seat License</h3>
+        <div class="big">$8–$20<small> / student / year</small></div>
+        <ul>
+          <li>Per-semester or annual, per active student</li>
+          <li>Automated proctoring & academic auditing</li>
+          <li>Verified-graduate prestige, not a commodity LMS</li>
+          <li>High-margin, predictable, recurring</li>
+        </ul>
+      </div>
+      <div class="price dark">
+        <div class="tag">Secondary</div>
+        <h3>Content Marketplace</h3>
+        <div class="big">15–25%<small> take-rate</small></div>
+        <ul>
+          <li>Publishers license textbooks as living Socratic modules</li>
+          <li>Master content stays server-side — bulk piracy contained</li>
+          <li>Turns a 100% leakage loss into a revenue stream</li>
+          <li>Assessment Architect upsell for professors</li>
+        </ul>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- CTA -->
+  <section class="block"><div class="wrap">
+    <div class="cta">
+      <h2 class="serif">See the magic in 60 seconds.</h2>
+      <p>Walk through a real Socratic session, try to cheat, and watch QORDA catch it — then flip to the professor's dashboard and see exactly what they'd see.</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative">
+        <button class="btn btn-cyan" onclick="go('student')">▶ Enter as a student</button>
+        <button class="btn btn-ghost" style="background:transparent;color:#fff;border-color:#3a4a72" onclick="go('professor')">Enter as a professor</button>
+      </div>
+    </div>
+    <footer>
+      <div class="logo" style="justify-content:center;margin-bottom:8px"><span class="mark"></span>QORDA</div>
+      QORDA — Verified learning for the AI era · Andijan, Uzbekistan<br>
+      <span class="demo-tag">⚙ Clickable prototype — flows are demonstration-only</span>
+    </footer>
+  </div></section>
+</div>
+
+<!-- ===================== STUDENT VIEW ===================== -->
+<div id="view-student" class="view">
+  <div class="app-top">
+    <div class="logo"><span class="mark"></span>QORDA</div>
+    <div class="roleswitch">
+      <button class="on" onclick="go('student')">Student</button>
+      <button onclick="go('professor')">Professor</button>
+    </div>
+    <a class="exit" onclick="go('landing')">← Exit demo</a>
+  </div>
+
+  <div class="work">
+    <div class="assignment">
+      <div class="meta">
+        <span class="pill live">● Live session</span>
+        <span class="pill">CS-201 · Algorithms</span>
+        <span class="pill">Prof. Karimova</span>
+      </div>
+      <h2>Assignment 4 — Time Complexity</h2>
+      <p>Work through this with your QORDA tutor. You won't submit an essay — you'll reason it out loud. Try typing a real answer, then try <b>pasting</b> one to see what happens.</p>
+    </div>
+
+    <div class="progress-label"><span>Session progress</span><span id="progLbl">Milestone 1 of 4</span></div>
+    <div class="progress" id="progBar">
+      <div class="seg cur"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div>
+    </div>
+
+    <div class="chatwin">
+      <div class="chat-head">
+        <div class="tutor-ava">Q</div>
+        <div class="t" style="line-height:1.3"><b>QORDA Tutor</b><br><span>Socratic mode · Algorithms</span></div>
+        <div class="status">Monitoring integrity</div>
+      </div>
+      <div class="msgs" id="msgs">
+        <div class="m ai"><div class="av">Q</div><div class="txt">Welcome. Let's check that you really understand this — not just that you can produce an answer.<br><br>In your own words: <b>why does an algorithm's time complexity actually matter</b> when the input gets large?</div></div>
+      </div>
+      <div class="composer">
+        <textarea id="answer" placeholder="Type your answer in your own words…"></textarea>
+        <div class="composer-row">
+          <div class="telemetry"><span class="tele-dot tele-typing" id="teleDot">Typing — cadence normal</span></div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <span class="composer-hint" id="hint"><b>Tip:</b> try pasting from ChatGPT to see the trap</span>
+            <button class="btn btn-primary" onclick="sendAnswer()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PROFESSOR VIEW ===================== -->
+<div id="view-professor" class="view">
+  <div class="app-top">
+    <div class="logo"><span class="mark"></span>QORDA</div>
+    <div class="roleswitch">
+      <button onclick="go('student')">Student</button>
+      <button class="on" onclick="go('professor')">Professor</button>
+    </div>
+    <a class="exit" onclick="go('landing')">← Exit demo</a>
+  </div>
+
+  <div class="dash">
+    <div class="dash-head">
+      <div>
+        <h2 class="serif">Integrity Matrix</h2>
+        <p>CS-201 · Algorithms · Sharda University, Andijan · 24 students</p>
+      </div>
+      <button class="btn btn-ghost">⤓ Export report</button>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi ok"><div class="v">18</div><div class="l">Verified clean</div></div>
+      <div class="kpi amber"><div class="v">4</div><div class="l">Needs review</div></div>
+      <div class="kpi flag"><div class="v">2</div><div class="l">Red-flagged</div></div>
+      <div class="kpi"><div class="v">82%</div><div class="l">Avg. comprehension</div></div>
+    </div>
+
+    <div class="matrix">
+      <div class="matrix-head">
+        <h3>Student sessions — Assignment 4</h3>
+        <span class="sub">Click a student for the full integrity timeline</span>
+      </div>
+      <table>
+        <thead><tr><th>Student</th><th>Comprehension</th><th class="hide-sm">Flags</th><th>Status</th></tr></thead>
+        <tbody id="matrixBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== QUIZ MODAL ===================== -->
+<div class="modal-bg" id="quizModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="timer" id="quizTimer">0:30</span>
+      <span class="pill">Verification gate</span>
+      <h3>Quick comprehension check</h3>
+      <p>Built live from your conversation. No external help possible.</p>
+    </div>
+    <div class="modal-body">
+      <div class="qz">You explained that complexity matters as input grows. Which choice best matches the reasoning you just gave?</div>
+      <div class="opt" onclick="pick(this)"><span class="k">A</span> A slower algorithm uses more disk space on large inputs.</div>
+      <div class="opt" onclick="pick(this)"><span class="k">B</span> As input grows, a slower algorithm's runtime grows so fast it becomes unusable.</div>
+      <div class="opt" onclick="pick(this)"><span class="k">C</span> Complexity only matters for small inputs, not large ones.</div>
+      <div style="display:flex;justify-content:flex-end;margin-top:8px">
+        <button class="btn btn-cyan" onclick="submitQuiz()">Submit answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DETAIL DRAWER ===================== -->
+<div class="drawer-bg" id="drawerBg" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <span class="x" onclick="closeDrawer()">×</span>
+    <span class="pill" id="dwBadge" style="background:#26315a;color:var(--cyan)">Session detail</span>
+    <h3 id="dwName">—</h3>
+    <div class="meta" id="dwMeta">—</div>
+  </div>
+  <div class="drawer-body" id="dwBody"></div>
+</div>
+
+<script>
+/* ---------- view routing ---------- */
+function go(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  window.scrollTo(0,0);
+  if(v==='professor') renderMatrix();
+}
+
+/* ---------- student chat + telemetry ---------- */
+let turn=0, pasted=false;
+const tutorLines=[
+  "Good — you're describing scalability. Push deeper: give me a concrete example where an O(n²) approach fails but an O(n log n) one survives.",
+  "Right direction. Now — why specifically does sorting first sometimes make an overall problem faster, even though sorting itself costs time?",
+  "Almost there. One more: if you had to explain to a classmate why we ignore constant factors in Big-O, what would you say?"
+];
+const ta=document.getElementById('answer');
+const teleDot=document.getElementById('teleDot');
+const hint=document.getElementById('hint');
+
+ta.addEventListener('paste',()=>{
+  pasted=true;
+  teleDot.className='tele-dot tele-paste';
+  teleDot.textContent='⚠ Paste detected — 0s thought time';
+  hint.innerHTML='<b style="color:#c01f2e">Caught.</b> That paste is now logged.';
+});
+ta.addEventListener('input',()=>{
+  if(!pasted){
+    teleDot.className='tele-dot tele-typing';
+    teleDot.textContent='Typing — cadence normal';
+  }
+});
+
+function addMsg(role,html,flagged){
+  const m=document.createElement('div');
+  m.className='m '+role;
+  m.innerHTML=`<div class="av">${role==='ai'?'Q':'You'}</div><div class="txt">${html}${flagged?'<div class="flag-inline">⚠ Flagged: clipboard paste · added to integrity log</div>':''}</div>`;
+  document.getElementById('msgs').appendChild(m);
+  const box=document.getElementById('msgs'); box.scrollTop=box.scrollHeight;
+}
+
+function sendAnswer(){
+  const val=ta.value.trim();
+  if(!val){ ta.focus(); return; }
+  addMsg('stu', val.replace(/</g,'&lt;'), pasted);
+  ta.value='';
+  const wasPasted=pasted; pasted=false;
+  teleDot.className='tele-dot tele-typing'; teleDot.textContent='Typing — cadence normal';
+  hint.innerHTML='<b>Tip:</b> try pasting from ChatGPT to see the trap';
+
+  // advance progress
+  turn++;
+  updateProgress();
+
+  setTimeout(()=>{
+    if(turn<=tutorLines.length){
+      const note = wasPasted ? " <br><br><i style='color:#c01f2e'>(I noticed that was pasted — so let's make sure you can reason it yourself.)</i>" : "";
+      addMsg('ai', tutorLines[turn-1]+note);
+    } else {
+      addMsg('ai',"That's the full reasoning chain. One last step — a 30-second check to verify your understanding.");
+      setTimeout(openQuiz,700);
+    }
+  },650);
+}
+
+function updateProgress(){
+  const segs=document.querySelectorAll('#progBar .seg');
+  const step=Math.min(turn,3);
+  segs.forEach((s,i)=>{
+    s.className='seg'+(i<step?' done':(i===step?' cur':''));
+  });
+  document.getElementById('progLbl').textContent='Milestone '+Math.min(turn+1,4)+' of 4';
+}
+
+/* ---------- quiz ---------- */
+let quizInterval, quizTime=30;
+function openQuiz(){
+  document.getElementById('quizModal').classList.add('show');
+  quizTime=30; document.getElementById('quizTimer').textContent='0:30';
+  quizInterval=setInterval(()=>{
+    quizTime--;
+    document.getElementById('quizTimer').textContent='0:'+(quizTime<10?'0':'')+quizTime;
+    if(quizTime<=0){clearInterval(quizInterval); submitQuiz();}
+  },1000);
+}
+function pick(el){
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function submitQuiz(){
+  clearInterval(quizInterval);
+  document.getElementById('quizModal').classList.remove('show');
+  addMsg('ai',"✓ Verified. Your comprehension score for this session: <b>88%</b>. This result — and your full integrity log — is now on Prof. Karimova's dashboard. <br><br><a onclick=\"go('professor')\" style='color:#0E9E92;font-weight:600;cursor:pointer'>See the professor's view →</a>");
+}
+
+/* ---------- professor matrix ---------- */
+const students=[
+  {n:"You (demo session)",init:"Y",score:88,col:"#2BB673",flags:"—",status:"green",label:"Verified",you:true,
+    tl:[["ok","Started session on time","Milestone 1 · cadence normal"],["ok","Multi-turn reasoning completed","4 milestones, own words"],["ok","Quiz gate passed","88% · 0 external-help signals"]]},
+  {n:"Aziza Rahimova",init:"AR",score:94,col:"#2BB673",flags:"—",status:"green",label:"Verified",
+    tl:[["ok","Consistent typing cadence","No paste events"],["ok","Strong multi-turn answers",""],["ok","Quiz gate passed","94%"]]},
+  {n:"Bekzod Tolipov",init:"BT",score:41,col:"#FF4D5E",flags:"2 paste · quiz fail",status:"red",label:"Red flag",
+    tl:[["flag","Large paste detected","Milestone 2 · 0s thought time"],["flag","Tab left for 6 min, returned with full block","Focus-state anomaly"],["flag","Quiz gate failed","Could not explain own submission"]]},
+  {n:"Dilnoza Yusupova",init:"DY",score:78,col:"#2BB673",flags:"—",status:"green",label:"Verified",
+    tl:[["ok","Normal cadence",""],["ok","Quiz gate passed","78%"]]},
+  {n:"Eldor Karimov",init:"EK",score:63,col:"#f0a000",flags:"1 focus anomaly",status:"amber",label:"Review",
+    tl:[["ok","Typing cadence normal",""],["flag","Brief tab-switch before answer","Milestone 3 · worth a look"],["ok","Quiz gate passed","63% — borderline"]]},
+  {n:"Farrux Saidov",init:"FS",score:90,col:"#2BB673",flags:"—",status:"green",label:"Verified",
+    tl:[["ok","Excellent reasoning chain",""],["ok","Quiz gate passed","90%"]]},
+  {n:"Gulnora Akbarova",init:"GA",score:85,col:"#2BB673",flags:"—",status:"green",label:"Verified",
+    tl:[["ok","Steady cadence",""],["ok","Quiz gate passed","85%"]]},
+  {n:"Husan Mirzaev",init:"HM",score:38,col:"#FF4D5E",flags:"paste · quiz fail",status:"red",label:"Red flag",
+    tl:[["flag","Instant text mutation","~1ms — clipboard dump"],["flag","Quiz gate failed","No comprehension of submitted work"]]},
+  {n:"Iroda Tashkentova",init:"IT",score:71,col:"#f0a000",flags:"low quiz margin",status:"amber",label:"Review",
+    tl:[["ok","Cadence normal",""],["ok","Quiz passed at 71%","Slightly below cohort"]]},
+];
+
+function renderMatrix(){
+  const body=document.getElementById('matrixBody');
+  body.innerHTML='';
+  students.forEach((s,i)=>{
+    const tr=document.createElement('tr');
+    tr.onclick=()=>openDrawer(i);
+    tr.innerHTML=`
+      <td><div class="stu-name"><span class="av">${s.init}</span><span>${s.n.replace('You (demo session)','You')}${s.you?'<span class="you-tag">your session</span>':''}</span></div></td>
+      <td><div class="score-bar"><div class="score-track"><div class="score-fill" style="width:${s.score}%;background:${s.col}"></div></div><span style="font-size:13px;color:${s.col};font-weight:700">${s.score}%</span></div></td>
+      <td class="hide-sm" style="font-size:13px;color:var(--muted)">${s.flags}</td>
+      <td><span class="badge ${s.status}"><span class="d"></span>${s.label}</span></td>`;
+    body.appendChild(tr);
+  });
+}
+
+function openDrawer(i){
+  const s=students[i];
+  document.getElementById('dwName').textContent=s.n.replace('You (demo session)','Your demo session');
+  document.getElementById('dwMeta').textContent='CS-201 · Assignment 4 · Comprehension '+s.score+'%';
+  const badge=document.getElementById('dwBadge');
+  badge.textContent=s.label;
+  badge.style.background = s.status==='red'?'#3a1f25':(s.status==='amber'?'#3a3018':'#1d3a30');
+  badge.style.color = s.status==='red'?'#ff8a96':(s.status==='amber'?'#ffcf80':'#7ee8c8');
+  let h='<div class="dsec"><h4>Integrity timeline</h4>';
+  s.tl.forEach(t=>{
+    h+=`<div class="timeline-item"><div class="ti-dot ${t[0]}">${t[0]==='ok'?'✓':'⚠'}</div><div class="ti-txt"><b>${t[1]}</b>${t[2]?'<span>'+t[2]+'</span>':''}</div></div>`;
+  });
+  h+='</div>';
+  h+=`<div class="dsec"><h4>What the professor sees</h4><p style="font-size:13.5px;color:var(--muted)">${
+    s.status==='red'
+    ? 'This student pasted external text and could not explain their own submission in the verification gate. Recommended action: schedule a short oral check.'
+    : s.status==='amber'
+    ? 'Mostly clean, with one signal worth a glance. No strong evidence of misconduct — flagged for human judgment, not auto-penalty.'
+    : 'Clean session. Reasoned through every milestone in their own words and passed the verification gate. No action needed.'
+  }</p></div>`;
+  document.getElementById('dwBody').innerHTML=h;
+  document.getElementById('drawer').classList.add('show');
+  document.getElementById('drawerBg').classList.add('show');
+}
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('show');
+  document.getElementById('drawerBg').classList.remove('show');
+}
+</script>
+</body>
+</html>
